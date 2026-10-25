@@ -55,10 +55,9 @@ def extract(path):
                     raise AppError("docx", "DOCX archive is encrypted or exceeds expansion limits.")
                 if any("vbaproject" in m.filename.lower() for m in members):
                     raise AppError("docx", "Macro content is not accepted.")
-            from docx import Document
-            doc = Document(BytesIO(blob))
-            text = "\n".join([p.text for p in doc.paragraphs] + [" | ".join(c.text for c in row.cells) for t in doc.tables for row in t.rows])
-            result["warning"] = "DOCX text and tables only; embedded pictures and charts are not transmitted."
+                from .docx_text import main_body_text
+                text = main_body_text(archive.read("word/document.xml"))
+            result["warning"] = "DOCX main-body paragraphs/tables only; headers, footnotes, embedded pictures and charts are not transmitted."
         else:
             from PIL import Image, ImageOps
             with warnings.catch_warnings():

@@ -141,6 +141,19 @@ def test_docx_tables_and_bomb(tmp_path):
         extract(path)
 
 
+@pytest.mark.parametrize("xml", [
+    b'<!DOCTYPE d [<!ENTITY secret SYSTEM "file:///private-test-file">]><d>&secret;</d>',
+    b'<d>' * 130 + b'</d>' * 130,
+    b'<unrecognized><body>not WordprocessingML</body></unrecognized>',
+])
+def test_docx_rejects_entities_excessive_depth_and_unknown_structure(tmp_path, xml):
+    path = tmp_path / "untrusted.docx"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("word/document.xml", xml)
+    with pytest.raises(AppError):
+        extract(path)
+
+
 def test_pdf_blank_encrypted_and_page_limit(tmp_path):
     from pypdf import PdfWriter
     path = tmp_path / "blank.pdf"

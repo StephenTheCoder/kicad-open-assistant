@@ -11,12 +11,14 @@ Original code and original prose in this repository are offered under **MIT**, w
 | wxPython 4.3.1 / wxWidgets 3.3.3 | Installed host UI; not bundled | [wxWindows Library Licence](https://wxpython.org/pages/license/index.html) | Preserve license/exception and bundled notices if packaging it |
 | OpenAI Python SDK 3.37.0 | Bundled worker dependency | [Apache-2.0](https://github.com/openai/openai-python/blob/main/LICENSE) | Hash-pinned; distribution license retained |
 | pypdf 6.21.2 | Bundled local PDF extraction | [BSD-3-Clause](https://github.com/py-pdf/pypdf/blob/main/LICENSE) | Exact distribution's three conditions, copyright and disclaimer retained |
-| python-docx 1.2.0 | Bundled DOCX extraction | [MIT](https://github.com/python-openxml/python-docx/blob/master/LICENSE) | Notices retained, including lxml's bundled native licenses |
+| defusedxml 0.7.1 | Bundled hardened XML parsing for original DOCX extractor | [PSF license](https://pypi.org/project/defusedxml/0.7.1/) | Distribution license retained; DTDs/entities/external resolution forbidden |
 | Pillow 13.0.0 | Bundled image validation/metadata removal | MIT-CMU; exact wheel notices | Native library notices retained |
 | OS credential-store adapter | Original ctypes Windows API adapter | MIT original source | No third-party adapter bundled; no file fallback |
 | Official kicad-python IPC client | Not used in the accepted architecture | Not bundled | No dependency or license claim for this release |
 
 No proprietary plugin content is licensed by this repository. Test screenshots show KiCad UI and our prototype; KiCad names/interface elements remain their owners' material. Do not present this working name as official KiCad branding. No third-party logos or copied visual assets are included.
+
+python-docx and its lxml dependency are development-only tools for generating test documents. They are excluded from the client/service locks and release archive. This avoids redistributing lxml's statically bundled native dependencies, whose notices include libiconv's additional LGPL terms. The original DOCX extractor reads bounded main-body WordprocessingML with defusedxml instead.
 
 The client archive includes the hash-locked dependencies, `dependencies.json` license inventory, a CycloneDX 1.6 component SBOM (`sbom.cdx.json`), and original distribution license directories including native-library notices. See THIRD-PARTY-NOTICES.md. The SBOM lists packaged Python distributions; nested native components are documented by their wheel license files. The host Python/wx/KiCad binaries are not bundled. Service dependencies are separately locked and installed with their notices into the backend image.
 

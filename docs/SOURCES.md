@@ -19,6 +19,9 @@ Accessed 2026-10-24 unless stated otherwise. Source content is linked, not vendo
 | O5 | https://developers.openai.com/api/reference/python | Installed official SDK and Responses interface |
 | O6 | https://developers.openai.com/api/docs/models/gpt-4.1-mini | Default pinned snapshot, modalities, context/output ceilings and accounting rates |
 | K9 | https://dev-docs.kicad.org/en/addons/index.html | PCM layout and metadata; installed KiCad schema v2 validates the candidate |
+| D1 | https://learn.microsoft.com/en-us/office/open-xml/word/structure-of-a-wordprocessingml-document | DOCX main-body paragraph/run/text structure |
+| D2 | https://pypi.org/project/defusedxml/0.7.1/ | Hardened XML API, explicit DTD/entity/external-resource prohibitions and PSF license |
+| D3 | https://github.com/lxml/lxml/blob/master/LICENSES.txt | Native-wheel distribution terms; lxml is confined to development fixture generation |
 | P1 | https://kicad.alttab.rs/pricing | Public hosted assistance description; numeric allowance unknown |
 | P2 | https://kicad.alttab.rs/ | Early build/roadmap distinction captured in prior investigation |
 
