@@ -8,7 +8,7 @@ Use one small Linux host with persistent local storage, Docker Compose, a domain
 
 Keep the OpenAI funding key in the host/platform secret store, mounted read-only at `/run/secrets/openai_key`. Set `KOA_SERVER_SECRET_FILE` to its private host path for the local Compose secret adapter. Do not put the key in Compose YAML, an environment example, command-line arguments, GitHub release assets, images or the plugin. A managed host should map its own secret store to the same mount. Use a dedicated provider project/key.
 
-Set `PYTHON_BASE` to a reviewed **digest-pinned** official Python 3.11 slim-bookworm image before a production deployment and record the digest. The Dockerfile has a development tag default; that tag is not a reproducibility claim. Dependency packages are locked with hashes in `requirements-service.lock`. The client ZIP has a separate deterministic build.
+The Dockerfile and Compose default pin the official Python 3.11 slim-bookworm multi-platform manifest by digest, resolved on 2026-10-24. Review and deliberately update `PYTHON_BASE` for security updates; record any deployment override. Dependency packages are locked with hashes in `requirements-service.lock`. The client ZIP has a separate deterministic build.
 
 From the repository on the host:
 

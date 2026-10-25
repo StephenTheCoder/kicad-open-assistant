@@ -19,7 +19,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11.5'
-      - run: python -m pip install --require-hashes --only-binary=:all: -r requirements-test.lock
+      - run: >-
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-test.lock
       - run: python -m pytest -q
       - run: python scripts/audit_release.py
   package:
@@ -33,7 +34,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11.5'
-      - run: python -m pip install --require-hashes --only-binary=:all: --target vendor -r requirements-client.lock
+      - run: >-
+          python -m pip install --require-hashes --only-binary=:all: --target vendor -r requirements-client.lock
       - run: python scripts/build_release.py
       - run: python scripts/build_release.py --output dist/reproducibility-check.zip
       - shell: python

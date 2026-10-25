@@ -4,7 +4,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       args:
-        PYTHON_BASE: ${PYTHON_BASE:-python:3.11-slim-bookworm}
+        PYTHON_BASE: ${PYTHON_BASE:-python:3.11-slim-bookworm@sha256:f06d01d4ba3f8ad5af45a3ec87df19c1d317d8e8961edc0fabda61811af6f7cf}
     environment:
       KOA_LEDGER: /data/ledger.sqlite3
       KOA_SPONSORED_ENABLED: ${KOA_SPONSORED_ENABLED:-false}
