@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   tests:
     strategy:
@@ -68,3 +71,15 @@ jobs:
       - run: docker exec -i koa-service-smoke python < scripts/container_smoke.py
       - if: always()
         run: docker stop koa-service-smoke
+
+  ingress-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - run: >-
+          docker run --rm --network none --entrypoint caddy
+          -v "$PWD/deploy/Caddyfile.example:/etc/caddy/Caddyfile:ro"
+          caddy:2-alpine@sha256:eb4d35b7452d1ab6171fbdbe8d9275b2301dad6dad92115d91e19fb9b24d510f
+          validate --adapter caddyfile --config /etc/caddy/Caddyfile

@@ -1,7 +1,19 @@
 # Replace the host only after DNS and hosting are chosen. No request logs enabled.
+{
+    servers {
+        max_header_size 16KiB
+        timeouts {
+            read_header 10s
+            read_body 30s
+            write 210s
+            idle 30s
+        }
+    }
+}
+
 assistant.example.org {
     request_body {
-        max_size 30MB
+        max_size 30MiB
     }
     reverse_proxy 127.0.0.1:8000 {
         flush_interval -1
