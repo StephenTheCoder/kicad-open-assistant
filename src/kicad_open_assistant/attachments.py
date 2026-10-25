@@ -66,9 +66,11 @@ def extract(path):
                     if original.format not in {"PNG", "JPEG", "WEBP"} or original.width * original.height > 20_000_000 or getattr(original, "n_frames", 1) != 1:
                         raise AppError("image", "Use a single image of at most 20 megapixels.")
                     original.load()
-                    im = ImageOps.exif_transpose(original).convert("RGB")
-                    clean = Image.new("RGB", im.size)
-                    clean.paste(im)
+                    im = ImageOps.exif_transpose(original).convert("RGBA")
+                    # Flatten visible pixels onto white; dropping alpha could reveal
+                    # otherwise invisible RGB data in a selected transparent image.
+                    clean = Image.new("RGB", im.size, "white")
+                    clean.paste(im, mask=im.getchannel("A"))
                     output = BytesIO()
                     clean.save(output, format="PNG")
                     outgoing = output.getvalue()

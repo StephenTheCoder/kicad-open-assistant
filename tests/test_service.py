@@ -17,6 +17,20 @@ def setup_ledger(tmp_path, budget=1_000_000):
     return ledger
 
 
+def test_server_secret_mount_is_bounded_and_errors_do_not_echo_contents(tmp_path):
+    path = tmp_path / "server-secret"
+    config = Config(str(tmp_path / "db"), secret_file=str(path))
+    with pytest.raises(AppError):
+        config.read_key()
+    for value in ("", "sensitive-fixture\ninvalid-line", "x" * 2401):
+        path.write_text(value, encoding="utf-8")
+        with pytest.raises(AppError) as caught:
+            config.read_key()
+        assert caught.value.code == "configuration" and "sensitive-fixture" not in str(caught.value)
+    path.write_text("synthetic-server-only\n", encoding="utf-8")
+    assert config.read_key() == "synthetic-server-only"
+
+
 def test_atomic_budget_under_concurrency_and_replay(tmp_path):
     ledger = setup_ledger(tmp_path, 1000)
     for i in range(24):

@@ -49,6 +49,16 @@ class Config:
         # Reserve the entire model context, not a client estimate. No tool fees.
         return self.cost(self.model_context, self.output_limit)
 
+    def read_key(self):
+        try:
+            with Path(self.secret_file).open(encoding="utf-8") as source:
+                key = source.read(2401).strip()
+            if not key or len(key) > 2400 or "\n" in key or "\r" in key:
+                raise ValueError()
+            return key
+        except Exception:
+            raise AppError("configuration", "Server secret is unavailable or invalid.") from None
+
 
 def create_app(config=None, provider=openai_stream):
     if config is None:
@@ -111,12 +121,7 @@ def create_app(config=None, provider=openai_stream):
         await asyncio.to_thread(validate_request, value)
         if value["model"] != config.model or value["max_output_tokens"] > config.output_limit:
             raise AppError("model", "Server model or output policy does not match the reviewed request.")
-        try:
-            key = Path(config.secret_file).read_text(encoding="utf-8").strip()
-            if not key or len(key) > 2400:
-                raise ValueError()
-        except Exception:
-            raise AppError("configuration", "Server secret is unavailable.") from None
+        key = config.read_key()
         await asyncio.to_thread(ledger.reserve, user, key_id, config.reservation(), 1, config.global_concurrency)
 
         async def generate():

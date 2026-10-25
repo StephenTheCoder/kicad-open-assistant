@@ -141,6 +141,16 @@ def test_docx_tables_and_bomb(tmp_path):
         extract(path)
 
 
+def test_transparent_image_does_not_reveal_hidden_color(tmp_path):
+    path = tmp_path / "transparent.png"
+    im = Image.new("RGBA", (2, 1), (255, 0, 0, 0))
+    im.putpixel((1, 0), (0, 0, 0, 255))
+    im.save(path)
+    outgoing = Image.open(BytesIO(base64.b64decode(extract(path)["image_url"].split(",")[1])))
+    assert outgoing.getpixel((0, 0)) == (255, 255, 255)
+    assert outgoing.getpixel((1, 0)) == (0, 0, 0)
+
+
 @pytest.mark.parametrize("xml", [
     b'<!DOCTYPE d [<!ENTITY secret SYSTEM "file:///private-test-file">]><d>&secret;</d>',
     b'<d>' * 130 + b'</d>' * 130,
