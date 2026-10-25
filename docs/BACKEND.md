@@ -4,9 +4,13 @@ Sponsored mode is an authenticated application service. It accepts only bounded 
 
 ## Choose and prepare the host
 
+For a managed deployment, use the prepared [Railway runbook](RAILWAY.md) and root `railway.json`. It keeps this same Python service and persistent SQLite accounting; the provider domain removes the need to purchase a domain. Hosting fees are separate from the application API allowance. The following Compose instructions remain available for an existing Linux host.
+
 Use one small Linux host with persistent local storage, Docker Compose, a domain and a maintained HTTPS reverse proxy. The supplied Compose service binds only to localhost, runs as UID 10001, drops capabilities, has a read-only root filesystem and resource limits, and disables access logging. CI builds the actual container and verifies HTTP health, authentication, disabled access and revocation with no provider key or inference call. A real deployment still requires validation of the chosen host, secret mount and public HTTPS ingress before activation.
 
 Keep the OpenAI funding key in the host/platform secret store, mounted read-only at `/run/secrets/openai_key`. Set `KOA_SERVER_SECRET_FILE` to its private host path for the local Compose secret adapter. Do not put the key in Compose YAML, an environment example, command-line arguments, GitHub release assets, images or the plugin. A managed host should map its own secret store to the same mount. Use a dedicated provider project/key.
+
+Railway instead supplies the key as the sealed server variable `KOA_SERVER_OPENAI_KEY`, with the explicit `KOA_USE_SERVER_SECRET_ENV=true` adapter. Do not set `KOA_OPENAI_SECRET_FILE` at the same time. The secret is read only by server code (excluded from the client archive), is never returned to clients, and is not written to the ledger. The Dockerfile does not accept it as a build argument. A sealed variable is still available to the running server and platform administrators; protect that account and do not enable environment/body logging.
 
 The mount must be readable by container UID 10001 and inaccessible to unrelated host users. Local Compose file secrets retain the source file's ownership/permissions: provision the dedicated secret file as UID/GID 10001 with mode 0400 (and a private parent directory), or use the platform secret store's equivalent access controls. Do not solve a permission error by making the key world-readable. Run the admin CLI through the container so its activation preflight checks readability under the same UID. It reads only bounded secret content and never prints it.
 

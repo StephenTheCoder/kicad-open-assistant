@@ -31,6 +31,43 @@ def test_server_secret_mount_is_bounded_and_errors_do_not_echo_contents(tmp_path
     assert config.read_key() == "synthetic-server-only"
 
 
+def test_managed_server_secret_requires_explicit_mode_and_valid_value(tmp_path, monkeypatch):
+    config = Config(str(tmp_path / "db"), server_secret_env=True)
+    for value in ("", "sensitive-fixture\nsecond-line", "x" * 2401):
+        monkeypatch.setenv("KOA_SERVER_OPENAI_KEY", value)
+        with pytest.raises(AppError) as caught:
+            config.read_key()
+        assert caught.value.code == "configuration" and "sensitive-fixture" not in str(caught.value)
+    monkeypatch.setenv("KOA_SERVER_OPENAI_KEY", "synthetic-managed-server-secret")
+    assert config.read_key() == "synthetic-managed-server-secret"
+    with pytest.raises(AppError):
+        Config(str(tmp_path / "db")).read_key()  # Never silently select an environment key.
+    with pytest.raises(AppError):
+        Config(str(tmp_path / "db"), secret_file="conflicting-path", server_secret_env=True).read_key()
+    assert "synthetic-managed-server-secret" not in repr(config)
+
+
+@pytest.mark.asyncio
+async def test_managed_secret_adapter_never_returns_or_records_key(tmp_path, monkeypatch):
+    secret = "synthetic-managed-server-secret"
+    monkeypatch.setenv("KOA_SERVER_OPENAI_KEY", secret)
+    async def provider(request, key):
+        assert key == secret
+        yield {"type": "done", "status": "completed", "usage": {"input_tokens": 2, "output_tokens": 1}}
+    config = Config(str(tmp_path / "ledger.db"), True, server_secret_env=True, price_valid_until="2099-01-01")
+    app = create_app(config, provider)
+    ledger = app.state.ledger
+    ledger.initialize()
+    ledger.configure(200_000_000, True)
+    token = ledger.issue("sample-user", 25_000_000)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="https://test") as client:
+        response = await client.post("/v1/chat", json=make_request(DEFAULT_MODEL, "Hello", [], []), headers={"Authorization": "Bearer " + token, "Idempotency-Key": uuid.uuid4().hex})
+        assert response.status_code == 200 and secret not in response.text
+    assert ledger.status("sample-user")["remaining_microdollars"] == 25_000_000 - config.cost(2, 1)
+    for path in tmp_path.glob("ledger.db*"):
+        assert secret.encode() not in path.read_bytes()
+
+
 def test_atomic_budget_under_concurrency_and_replay(tmp_path):
     ledger = setup_ledger(tmp_path, 1000)
     for i in range(24):

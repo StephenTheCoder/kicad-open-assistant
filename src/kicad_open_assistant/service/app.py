@@ -28,6 +28,7 @@ class Config:
     model_context: int = 1_047_576
     price_valid_until: str = "2000-01-01"
     global_concurrency: int = 4
+    server_secret_env: bool = False
 
     def check(self):
         if not self.enabled:
@@ -51,8 +52,14 @@ class Config:
 
     def read_key(self):
         try:
-            with Path(self.secret_file).open(encoding="utf-8") as source:
-                key = source.read(2401).strip()
+            if self.server_secret_env:
+                if self.secret_file:
+                    raise ValueError()
+                # Explicit server-only adapter for managed, sealed secret stores.
+                key = os.environ.get("KOA_SERVER_OPENAI_KEY", "").strip()
+            else:
+                with Path(self.secret_file).open(encoding="utf-8") as source:
+                    key = source.read(2401).strip()
             if not key or len(key) > 2400 or "\n" in key or "\r" in key:
                 raise ValueError()
             return key
@@ -65,6 +72,7 @@ def create_app(config=None, provider=openai_stream):
         config = Config(database=os.environ.get("KOA_LEDGER", "/data/ledger.sqlite3"),
                         enabled=os.environ.get("KOA_SPONSORED_ENABLED") == "true",
                         secret_file=os.environ.get("KOA_OPENAI_SECRET_FILE", ""),
+                        server_secret_env=os.environ.get("KOA_USE_SERVER_SECRET_ENV") == "true",
                         price_valid_until=os.environ.get("KOA_PRICE_VALID_UNTIL", "2000-01-01"))
     ledger = Ledger(config.database)
     app = FastAPI(title="KiCad Open Assistant service", docs_url=None, redoc_url=None, openapi_url=None)

@@ -40,7 +40,7 @@ def main():
         print("Sponsored access disabled. Existing reservations remain charged.")
     elif args.command == "enable":
         from .app import Config
-        config = Config(database=args.db, enabled=True, secret_file=os.environ.get("KOA_OPENAI_SECRET_FILE", ""), price_valid_until=os.environ.get("KOA_PRICE_VALID_UNTIL", "2000-01-01"))
+        config = Config(database=args.db, enabled=True, secret_file=os.environ.get("KOA_OPENAI_SECRET_FILE", ""), server_secret_env=os.environ.get("KOA_USE_SERVER_SECRET_ENV") == "true", price_valid_until=os.environ.get("KOA_PRICE_VALID_UNTIL", "2000-01-01"))
         config.check()
         config.read_key()  # Check actual readability as the service UID, without printing it.
         ledger.configure(money(args.budget_usd), True)
