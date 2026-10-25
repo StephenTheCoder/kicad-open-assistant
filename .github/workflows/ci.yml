@@ -73,7 +73,7 @@ jobs:
       - run: >-
           docker run --detach --name koa-managed-smoke --user 0:0 --read-only
           --tmpfs /tmp:rw,noexec,nosuid,size=64m --mount type=volume,source=koa-ci-managed,target=/data
-          --cap-drop ALL --cap-add CHOWN --cap-add FOWNER --cap-add SETUID --cap-add SETGID
+          --cap-drop ALL --cap-add CHOWN --cap-add FOWNER --cap-add DAC_OVERRIDE --cap-add SETUID --cap-add SETGID
           --security-opt no-new-privileges --memory 1g --pids-limit 64
           -e KOA_LEDGER=/data/koa/ledger.sqlite3 koa-service:test
           python -m kicad_open_assistant.service.host
@@ -82,6 +82,10 @@ jobs:
       - run: docker restart koa-managed-smoke
       - run: docker exec --user 10001:10001 -i koa-managed-smoke python < scripts/container_smoke.py
       - run: docker exec --user 10001:10001 -i koa-managed-smoke python - verify-restart < scripts/host_smoke.py
+      - if: failure()
+        run: docker logs koa-managed-smoke
+      - if: failure()
+        run: docker inspect --format '{{json .State}}' koa-managed-smoke
       - if: always()
         run: docker stop koa-service-smoke koa-managed-smoke
 
