@@ -42,6 +42,45 @@ def test_text_context_and_exact_snapshot(tmp_path):
     assert "tools" not in request
 
 
+def test_bounded_view_full_export_and_live_owner_recovery(tmp_path):
+    import os
+    store = Store(tmp_path / "chat.db")
+    conversation = store.create("long")
+    for number in range(50):
+        store.add(conversation, "user", [{"type": "input_text", "text": str(number)}])
+    view = store.view(conversation)
+    assert len(view["messages"]) == 40 and view["omitted"] == 10
+    assert view["messages"][0]["content"][0]["text"] == "10"
+    assert store.view(conversation, budget=1)["omitted"] == 50
+    export = tmp_path / "complete.json"
+    store.export(conversation, export)
+    assert len(json.loads(export.read_text())) == 50
+    live = store.add(conversation, "assistant", [{"type": "input_text", "text": "live"}], "streaming", os.getpid())
+    stale = store.add(conversation, "assistant", [{"type": "input_text", "text": "stale"}], "streaming", 99999999)
+    store.interrupt(conversation)
+    states = {row["id"]: row["status"] for row in store.messages(conversation)}
+    assert states[live] == "streaming" and states[stale] == "interrupted"
+
+
+def test_original_database_migrates_without_losing_content(tmp_path):
+    import sqlite3
+    path = tmp_path / "old.db"
+    with sqlite3.connect(path) as db:
+        db.executescript("""
+            CREATE TABLE conversations(id TEXT PRIMARY KEY, title TEXT NOT NULL, created REAL NOT NULL);
+            CREATE TABLE messages(id TEXT PRIMARY KEY, conversation TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+                role TEXT NOT NULL, content TEXT NOT NULL, status TEXT NOT NULL, created REAL NOT NULL);
+            INSERT INTO conversations VALUES('one','Saved title',1);
+            PRAGMA user_version=1;
+        """)
+        content = [{"type": "input_text", "text": "Original saved circuit notes"}]
+        db.execute("INSERT INTO messages VALUES(?,?,?,?,?,?)", ("message", "one", "user", json.dumps(content), "completed", 1))
+    migrated = Store(path)
+    assert migrated.list()[0]["title"] == "Saved title"
+    assert migrated.messages("one")[0]["content"] == content
+    assert migrated.messages("one")[0]["owner_pid"] is None
+
+
 def test_reject_invalid_requests_and_caps():
     req = make_request("gpt-4.1-mini", "hello", [], [])
     for extra in ("tools", "instructions", "base_url", "previous_response_id"):
@@ -81,6 +120,10 @@ def test_image_metadata_removed_and_no_remote_fetch(tmp_path):
     assert b"do-not-transmit" not in blob
     assert Image.open(BytesIO(blob)).size == (40, 30)
     validate_request(make_request("gpt-4.1-mini", "Describe", [], [result]))
+    # Eight images each have a text label, plus prompt and selected board context.
+    validate_request(make_request("gpt-4.1-mini", "Describe", [], [result] * 8, "Unsaved board metadata"))
+    with pytest.raises(AppError):
+        make_request("gpt-4.1-mini", "Describe", [], [result] * 9)
 
 
 def test_docx_tables_and_bomb(tmp_path):

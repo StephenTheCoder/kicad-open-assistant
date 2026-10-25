@@ -1,5 +1,7 @@
 # Implementation architecture
 
+Local display loads at most 40 recent messages / 30 MiB and explicitly reports omitted stored messages; full export streams all saved rows to a local file outside the GUI thread. Recovery marks only streams whose worker PID is no longer alive. PID reuse can conservatively leave an old partial turn marked streaming; it cannot trigger an inference call or design change.
+
 The accepted host is an experimental PCB dock on Windows KiCad 10.0.7. The original ActionPlugin adds a wx panel to the editor's existing AUI manager; a strict host-version check rejects other versions. See ADR 001 for this internal interface's maintenance limits.
 
 ```mermaid

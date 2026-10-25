@@ -78,7 +78,7 @@ class Task:
             timer = threading.Timer(self.timeout, self.kill)
             timer.daemon = True
             timer.start()
-            self.process.stdin.write(json.dumps(self.command).encode("utf-8"))
+            self.process.stdin.write(json.dumps(self.command, ensure_ascii=False).encode("utf-8"))
             self.process.stdin.close()
             self.command = None  # Do not retain credential entry buffers.
             terminal = False
@@ -98,6 +98,7 @@ class Task:
             if not self.cancelled.is_set():
                 self.callback({"type": "error", "code": "worker", "message": "Could not start the isolated worker. Verify installation and permissions."})
         finally:
+            self.command = None
             if timer:
                 timer.cancel()
             if self.process:

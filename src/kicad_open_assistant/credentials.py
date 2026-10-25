@@ -45,6 +45,9 @@ def read(name):
 
 
 def write(name, secret):
+    secret = secret.strip()
+    if "\n" in secret or "\r" in secret:
+        raise AppError("credential", "Use a single-line key or access token.")
     if not secret.strip() or len(secret.encode()) > 2400:
         raise AppError("credential", "Credential must contain 1–2400 UTF-8 bytes.")
     blob = (ctypes.c_ubyte * len(secret.encode())).from_buffer_copy(secret.encode())

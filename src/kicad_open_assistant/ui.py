@@ -93,8 +93,9 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.python = Path(python or (Path(sys.base_prefix) / "python.exe"))
         self.alive, self.loading = True, False
         self.load_generation = 0
-        self.tasks, self.chat_task = [], None
+        self.tasks, self.chat_task, self.load_task = [], None, None
         self.selected, self.messages, self.conversations = None, [], []
+        self.omitted = 0
         self.attachments, self.context, self.drafts = [], "", {}
         self.active, self.answer, self.reply_id, self.request_id = None, "", None, None
         self.settings = {"mode": "personal", "model": DEFAULT_MODEL, "endpoint": "", "output_limit": 2048, "history_count": 8}
@@ -167,20 +168,22 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.tasks = [task for task in self.tasks if task.thread.is_alive()]
         def deliver(event):
             if self.alive:
-                wx.CallAfter(self.received, handler, event)
+                wx.CallAfter(self.received, handler, event, task)
         task = Task(self.python, command, deliver, timeout)
         self.tasks.append(task)
         task.start()
         return task
 
-    def received(self, handler, event):
-        if not self.alive:
+    def received(self, handler, event, task):
+        if not self.alive or task.cancelled.is_set():
             return
         if event["type"] == "error":
             self.info(event["message"])
         handler(event)
 
     def reload(self, identifier=None, recover=False, status=None):
+        if self.load_task:
+            self.load_task.cancel()
         self.loading = True
         self.load_generation += 1
         generation = self.load_generation
@@ -191,6 +194,7 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
             if event["type"] == "result":
                 value = event["value"]
                 self.conversations, self.messages, self.selected = value["conversations"], value["messages"], value["selected"]
+                self.omitted = value["omitted"]
                 self.settings.update(value["settings"])
                 self.choice.Set([r["title"] for r in self.conversations])
                 self.choice.SetSelection(next(i for i, r in enumerate(self.conversations) if r["id"] == self.selected))
@@ -199,11 +203,13 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
             if event["type"] in {"exit", "error"}:
                 self.loading = False
                 self.choice.Enable()
-        self.operation({"action": "load", "conversation": identifier, "recover": recover}, done)
+        self.load_task = self.operation({"action": "load", "conversation": identifier, "recover": recover}, done)
 
     def render(self):
         visible = [m for m in self.messages if not (self.active == self.selected and m["role"] == "assistant" and m["status"] == "streaming")]
         text = "\n\n".join(f"{m['role'].title()} [{m['status']}]:\n{message_text(m)}" for m in visible)
+        if self.omitted:
+            text = f"{self.omitted} earlier messages remain saved locally. Export includes the complete conversation; this view loads at most 40 messages / 30 MiB.\n\n" + text
         if self.active == self.selected:
             text += "\n\nAssistant [streaming]:\n" + self.answer
         self.transcript.ChangeValue(text or "Ask an electronics or KiCad question. This assistant cannot modify designs.")
@@ -245,13 +251,11 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
         self.operation({"action": "delete", "conversation": identifier}, lambda e: self.reload() if e["type"] == "result" else None)
 
     def export(self, event):
+        if not self.selected:
+            return
         with wx.FileDialog(self, "Export local conversation", wildcard="JSON (*.json)|*.json", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as dialog:
             if dialog.ShowModal() == wx.ID_OK:
-                try:
-                    Path(dialog.GetPath()).write_text(json.dumps(self.messages, ensure_ascii=False, indent=2), encoding="utf-8")
-                    self.info("Conversation exported locally, including stored attachment snapshots.")
-                except OSError:
-                    self.info("Could not write export; choose a writable location.")
+                self.operation({"action": "export", "conversation": self.selected, "path": dialog.GetPath()}, lambda e: self.info("Complete persisted conversation exported locally, including stored attachment snapshots.") if e["type"] == "result" else None)
 
     def attach(self, event):
         if len(self.attachments) >= 8:
@@ -340,7 +344,7 @@ class AssistantPanel(wx.lib.scrolledpanel.ScrolledPanel):
             self.info(error.message)
             return
         settings = self.settings.copy()
-        with ReviewDialog(self, request, settings, len(available) - len(history)) as dialog:
+        with ReviewDialog(self, request, settings, self.omitted + len(available) - len(history)) as dialog:
             if dialog.ShowModal() != wx.ID_OK:
                 return
         self.active, self.answer, self.reply_id, self.request_id = self.selected, "", None, uuid.uuid4().hex

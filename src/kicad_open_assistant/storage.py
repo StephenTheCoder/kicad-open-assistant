@@ -5,7 +5,36 @@ from pathlib import Path
 import sqlite3
 import time
 import uuid
+import sys
 from contextlib import contextmanager
+
+
+def process_alive(pid):
+    if not pid:
+        return False
+    if sys.platform == "win32":
+        import ctypes
+        from ctypes import wintypes
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        kernel.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+        handle = kernel.OpenProcess(0x1000, False, pid)
+        if not handle:
+            return ctypes.get_last_error() == 5  # Access denied: don't mislabel a live owner.
+        try:
+            code = wintypes.DWORD()
+            return not kernel.GetExitCodeProcess(handle, ctypes.byref(code)) or code.value == 259
+        finally:
+            kernel.CloseHandle(handle)
+    try:
+        os.kill(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
 
 
 def data_directory():
@@ -22,8 +51,11 @@ class Store:
                 CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY, conversation TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
                     role TEXT NOT NULL, content TEXT NOT NULL, status TEXT NOT NULL, created REAL NOT NULL);
                 CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
-                PRAGMA user_version=1;
             """)
+            db.execute("BEGIN IMMEDIATE")
+            if "owner_pid" not in {row[1] for row in db.execute("PRAGMA table_info(messages)")}:
+                db.execute("ALTER TABLE messages ADD COLUMN owner_pid INTEGER")
+            db.execute("PRAGMA user_version=2")
 
     @contextmanager
     def connect(self):
@@ -61,10 +93,41 @@ class Store:
         with self.connect() as db:
             return [{**dict(r), "content": json.loads(r["content"])} for r in db.execute("SELECT * FROM messages WHERE conversation=? ORDER BY created,rowid", (identifier,))]
 
-    def add(self, conversation, role, content, status="completed"):
+    def view(self, identifier, limit=40, budget=30 * 1024 * 1024):
+        """Bound UI memory independently of total saved conversation size."""
+        with self.connect() as db:
+            count = db.execute("SELECT COUNT(*) FROM messages WHERE conversation=?", (identifier,)).fetchone()[0]
+            candidates = db.execute("SELECT id,length(CAST(content AS BLOB)) AS bytes FROM messages WHERE conversation=? ORDER BY created DESC,rowid DESC LIMIT ?", (identifier, limit)).fetchall()
+            rows, used = [], 0
+            for candidate in candidates:
+                if used + candidate["bytes"] > budget:
+                    break
+                row = db.execute("SELECT * FROM messages WHERE id=?", (candidate["id"],)).fetchone()
+                rows.append({**dict(row), "content": json.loads(row["content"])})
+                used += candidate["bytes"]
+            return {"messages": list(reversed(rows)), "omitted": count - len(rows)}
+
+    def export(self, identifier, destination):
+        destination = Path(destination)
+        temporary = destination.with_name(destination.name + "." + uuid.uuid4().hex + ".partial")
+        try:
+            with self.connect() as db, temporary.open("x", encoding="utf-8") as output:
+                output.write("[\n")
+                for index, row in enumerate(db.execute("SELECT * FROM messages WHERE conversation=? ORDER BY created,rowid", (identifier,))):
+                    if index:
+                        output.write(",\n")
+                    item = {key: row[key] for key in ("id", "role", "status", "created")}
+                    item["content"] = json.loads(row["content"])
+                    json.dump(item, output, ensure_ascii=False)
+                output.write("\n]\n")
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+    def add(self, conversation, role, content, status="completed", owner_pid=None):
         identifier = uuid.uuid4().hex
         with self.connect() as db:
-            db.execute("INSERT INTO messages VALUES(?,?,?,?,?,?)", (identifier, conversation, role, json.dumps(content, ensure_ascii=False), status, time.time()))
+            db.execute("INSERT INTO messages VALUES(?,?,?,?,?,?,?)", (identifier, conversation, role, json.dumps(content, ensure_ascii=False), status, time.time(), owner_pid))
         return identifier
 
     def finish(self, identifier, text, status):
@@ -73,7 +136,9 @@ class Store:
 
     def interrupt(self, identifier):
         with self.connect() as db:
-            db.execute("UPDATE messages SET status='interrupted' WHERE conversation=? AND status='streaming'", (identifier,))
+            for row in db.execute("SELECT id,owner_pid FROM messages WHERE conversation=? AND status='streaming'", (identifier,)).fetchall():
+                if not process_alive(row["owner_pid"]):
+                    db.execute("UPDATE messages SET status='interrupted' WHERE id=? AND status='streaming'", (row["id"],))
 
     def settings(self):
         with self.connect() as db:

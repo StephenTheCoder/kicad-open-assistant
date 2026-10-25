@@ -45,7 +45,7 @@ def validate_request(value, check_images=True):
         if not isinstance(message, dict) or set(message) != {"role", "content"} or message["role"] not in ("user", "assistant"):
             raise AppError("invalid_request", "Only user and assistant conversation messages are accepted.")
         parts = message["content"]
-        if not isinstance(parts, list) or not 1 <= len(parts) <= 17:
+        if not isinstance(parts, list) or not 1 <= len(parts) <= 18:
             raise AppError("invalid_request", "Invalid message content.")
         for part in parts:
             if not isinstance(part, dict):

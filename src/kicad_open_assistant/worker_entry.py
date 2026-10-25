@@ -11,13 +11,15 @@ import json
 import time
 import warnings
 import logging
+import os
 
 from kicad_open_assistant.policy import AppError, MAX_BODY, validate_request
 from kicad_open_assistant.storage import Store
 
 
 def emit(value):
-    print(json.dumps(value, ensure_ascii=True), flush=True)
+    sys.stdout.buffer.write((json.dumps(value, ensure_ascii=False) + "\n").encode("utf-8"))
+    sys.stdout.buffer.flush()
 
 
 async def dispatch(command):
@@ -34,8 +36,9 @@ async def dispatch(command):
             rows = store.list()
         identifier = command.get("conversation") or rows[0]["id"]
         if command.get("recover"):
-            store.interrupt(identifier)
-        emit({"type": "result", "value": {"conversations": rows, "messages": store.messages(identifier), "selected": identifier, "settings": store.settings()}})
+            for row in rows:
+                store.interrupt(row["id"])
+        emit({"type": "result", "value": {"conversations": rows, **store.view(identifier), "selected": identifier, "settings": store.settings()}})
     elif action == "create":
         emit({"type": "result", "value": store.create()})
     elif action == "rename":
@@ -43,6 +46,9 @@ async def dispatch(command):
         emit({"type": "result", "value": True})
     elif action == "delete":
         store.delete(command["conversation"])
+        emit({"type": "result", "value": True})
+    elif action == "export":
+        store.export(command["conversation"], command["path"])
         emit({"type": "result", "value": True})
     elif action == "settings":
         from kicad_open_assistant.credentials import write, delete, target
@@ -72,7 +78,7 @@ async def dispatch(command):
             raise AppError("missing_credentials", "No credential saved for this connection. Open Connection settings; your key or access token stays in Windows Credential Manager.")
         conversation = command["conversation"]
         user_id = store.add(conversation, "user", request["input"][-1]["content"])
-        reply = store.add(conversation, "assistant", [{"type": "input_text", "text": ""}], "streaming")
+        reply = store.add(conversation, "assistant", [{"type": "input_text", "text": ""}], "streaming", owner_pid=os.getpid())
         emit({"type": "started", "reply_id": reply, "user_id": user_id})
         stream = openai_stream(request, secret) if settings["mode"] == "personal" else sponsored_stream(request, settings["endpoint"], secret, command["request_id"])
         answer, status, checkpoint = "", "failed", time.monotonic()

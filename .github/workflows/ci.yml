@@ -61,4 +61,10 @@ jobs:
         with:
           persist-credentials: false
       - run: docker build -f deploy/Dockerfile -t koa-service:test .
-      - run: docker run --rm -e KOA_LEDGER=/tmp/test-ledger.sqlite3 koa-service:test python -m kicad_open_assistant.service.admin init
+      - run: >-
+          docker run --detach --name koa-service-smoke --read-only
+          --tmpfs /tmp:rw,noexec,nosuid,size=64m --mount type=volume,source=koa-ci-ledger,target=/data
+          --cap-drop ALL --security-opt no-new-privileges --memory 768m --pids-limit 64 koa-service:test
+      - run: docker exec -i koa-service-smoke python < scripts/container_smoke.py
+      - if: always()
+        run: docker stop koa-service-smoke

@@ -23,7 +23,7 @@ def entries():
         relative = path.relative_to(vendor)
         if not path.is_file() or "__pycache__" in relative.parts or path.suffix in {".pyc", ".pyo"} or relative.parts[0] in {"bin", "Scripts"}:
             continue
-        if path.name in {"uv_cache.json", "direct_url.json", "INSTALLER", "REQUESTED", "RECORD"}:
+        if path.name in {".lock", "uv_cache.json", "direct_url.json", "INSTALLER", "REQUESTED", "RECORD"}:
             continue
         result["plugins/vendor/" + relative.as_posix()] = path
     for name in ("INSTALLATION.md", "PRIVACY.md", "SECURITY.md", "THIRD-PARTY-NOTICES.md"):

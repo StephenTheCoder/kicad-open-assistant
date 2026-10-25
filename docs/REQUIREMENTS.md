@@ -29,16 +29,16 @@ The previous investigation establishes chat, conversation management and attachm
 - Crash recovery preserves completed turns and marks interrupted partial answers. Allow export; disclose that ordinary local storage is not encrypted unless explicitly implemented.
 - No automatic cloud conversation synchronization. Deletion removes local records and unreferenced managed attachments; explain any separate provider-side retention.
 
-### Attachments (proposed application limits)
+### Attachments (release policy limits)
 
 | Format | Input cap | Processing and review |
 |---|---:|---|
-| KiCad/text (`.kicad_pcb`, `.kicad_sch`, `.kicad_pro`, `.net`, `.kicad_sym`, `.kicad_mod`, `.txt`, `.md`, `.csv`, `.json`) | 5 MiB/file | Bounded text decoding, explicit encoding error; show exact selected text, basename and truncation |
+| KiCad/text (`.kicad_pcb`, `.kicad_sch`, `.kicad_pro`, `.net`, `.kicad_sym`, `.kicad_mod`, `.txt`, `.md`, `.csv`, `.json`) | 5 MiB/file | Bounded text decoding, explicit encoding error; show exact selected text and basename; reject over-limit input without silent truncation |
 | PDF | 10 MiB/file, 100 pages | Local text extraction initially; scanned pages are flagged, not silently treated as empty. Original PDF/visual pages require explicit separate selection |
 | DOCX | 10 MiB/file; 50 MiB expanded ZIP contents | Extract paragraphs/tables locally; reject encrypted/damaged archives and excessive expansion; no macros or external resource resolution |
 | PNG/JPEG/WebP | 10 MiB/file, 20 megapixels | Decode/validate locally, strip metadata from the outgoing copy, display actual outgoing image and dimensions |
 
-Maximum 8 attachments and 20 MiB total original bytes per message; final encoded payload has an independent 30 MiB cap. Text budget starts at 100,000 characters across attachments and context; provider token limits may be lower. All limits are configurable downward by a hosted operator and are validated again server-side. Bound parser time/memory; reject symlinks escaping the explicitly chosen scope and unsupported binary files. These are initial policy values to validate, not tested parser implementations.
+Maximum 8 attachments and 20 MiB total original bytes per message; final encoded payload has an independent 30 MiB cap. Text budget starts at 100,000 characters across attachments and context; provider token limits may be lower. Server policy owns the hard limits and validates the complete request again; changing hard limits requires a reviewed service configuration or code update. Bound parser time/memory; reject symlinks escaping the explicitly chosen scope and unsupported binary files. Automated parser/boundary results and actual UI evidence are recorded separately in RELEASE-VALIDATION.md.
 
 The user's original files are never edited. Full-file upload, extracted text and rendered page images are distinct choices. Preview must show actual outgoing data. No hidden upload merely to generate a preview. A changed source file requires a new snapshot/review; sending uses the reviewed immutable snapshot.
 
@@ -60,11 +60,11 @@ The user's original files are never edited. Full-file upload, extracted text and
 
 ### Personal API keys and optional operator-funded hosting
 
-- Personal mode connects directly to the chosen supported provider using that user's key. Use the OS credential store, with an explicit session-only fallback if unavailable; never silently write keys to JSON or the conversation DB.
+- Personal mode connects directly to the chosen supported provider using that user's key. Use the OS credential store and fail clearly if it is unavailable; never write keys to JSON or the conversation DB.
 - Hosted mode authenticates users to an operator gateway. The operator's provider key remains server-side. No shared funded key is shipped in a plugin, repository or release archive.
 - Gateway enforces authentication, per-user limits, concurrency, payload/token caps, allowed models, spend ceilings and a global kill switch. Reserve budget before inference and reconcile actual usage after completion/cancellation. Treat client price/usage estimates as untrusted.
-- Hosted quotas, authentication service, model allowance, funding ceiling, retention policy and deployment are undecided. No backend or account infrastructure is deployed at this milestone. Personal mode must remain usable when the optional host is unavailable.
-- TLS verification stays enabled. A paid response is never initiated by the offline prototype.
+- The application service implements revocable tokens, per-user and global allowances, a fixed reviewed model policy and no conversation logging. The owner must still choose deployment and funded allowances; access stays disabled until then. Personal mode must remain usable when the optional host is unavailable.
+- TLS verification stays enabled. A paid response is never initiated by the offline prototype or API fixture.
 
 ## Deferred work
 

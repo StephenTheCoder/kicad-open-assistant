@@ -13,7 +13,7 @@ def error_for(error):
     if status == 403:
         return AppError("permission", "This account lacks access to the selected model or service.")
     if status == 429:
-        return AppError("quota", "Rate or usage allowance exhausted. Wait, or deliberately switch to personal mode.")
+        return AppError("quota", "Rate or usage allowance exhausted. Wait, or check the account's billing and limits.")
     if status in (400, 404, 422):
         return AppError("model_or_request", "Model or request is unsupported. Check the configured model's Responses and image compatibility.")
     if "Timeout" in name:
