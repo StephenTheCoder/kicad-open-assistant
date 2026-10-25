@@ -1,0 +1,91 @@
+Window: "untitled [Unsaved] — Schematic Editor", App: eeschema.exe.
+	0 window untitled [Unsaved] — Schematic Editor Secondary Actions: Raise
+		55 menu Tools
+			56 menu item (disabled) Update PCB from Schematic… F8 ID: 20397
+			57 menu item Switch to PCB Editor ID: 20151
+			58 menu item Calculator Tools ID: 20394
+			59 menu item Symbol Editor ID: 20391
+			60 menu item Update Symbols from Library... ID: 20103
+			61 menu item Rescue Symbols... ID: 20144
+			62 menu item (disabled) Remap Legacy Library Symbols... ID: 20145
+			63 menu item Bulk Edit Symbol Fields... ID: 20136
+			64 menu item Bulk Edit Symbol Library Links... ID: 20137
+			65 menu item Annotate Schematic... ID: 20140
+			66 menu item Increment Annotations From... ID: 20141
+			67 menu item Assign Footprints... ID: 20138
+			68 menu item Generate Bill of Materials... ID: 20153
+			69 menu item Generate Legacy Bill of Materials... ID: 20154
+			70 menu item (disabled) Update Schematic from PCB... ID: 20398
+			71 menu item Variants
+			72 menu item Refresh Plugins ID: 20412
+		1 pane panel ID: -31989
+			2 pane GLCanvas ID: -31983
+		3 status bar
+			4 text ID: -31993
+			5 text
+			6 text Z 1.67
+			7 text X 0 Y 0
+			8 text dx 0 dy 0 dist 0
+			9 text grid 50
+			10 text mils
+			11 text
+			12 text
+			13 text
+			14 text
+			15 text
+		16 pane panel ID: -31990
+		17 pane control ID: -31981
+		18 pane control ID: -31980
+		19 pane control ID: -31979
+		23 pane ID: -31978
+			24 tree ID: -31977
+				25 tree item (selectable, settable, string) untitled (page 1) Value: untitled (page 1)
+		26 pane panel ID: -31959
+			27 text No objects selected ID: -31958
+			28 pane wxPropertyGrid ID: -31957
+		29 pane ID: -31952
+			30 check box All items ID: -31951
+			31 check box Rule Areas ID: -31950
+			32 check box Symbols ID: -31948
+			33 check box Pins ID: -31947
+			34 check box Wires ID: -31946
+			35 check box Labels ID: -31945
+			36 check box Graphics ID: -31944
+			37 check box Images ID: -31943
+			38 check box Text ID: -31942
+			39 check box Other items ID: -31941
+		40 title bar (settable, string) Value: untitled [Unsaved] — Schematic Editor
+			41 menu bar System ID: MenuBar
+				73 menu item System
+			43 button Minimize
+			44 button Maximize
+			45 button Close
+		46 menu bar Application ID: MenuBar
+			74 menu item File
+			75 menu item Edit
+			76 menu item View
+			77 menu item Place
+			78 menu item Inspect
+			79 menu item Tools
+			80 menu item Preferences
+			81 menu item Help
+		55 menu Tools
+			56 menu item (disabled) Update PCB from Schematic… F8 ID: 20397
+			57 menu item Switch to PCB Editor ID: 20151
+			58 menu item Calculator Tools ID: 20394
+			59 menu item Symbol Editor ID: 20391
+			60 menu item Update Symbols from Library... ID: 20103
+			61 menu item Rescue Symbols... ID: 20144
+			62 menu item (disabled) Remap Legacy Library Symbols... ID: 20145
+			63 menu item Bulk Edit Symbol Fields... ID: 20136
+			64 menu item Bulk Edit Symbol Library Links... ID: 20137
+			65 menu item Annotate Schematic... ID: 20140
+			66 menu item Increment Annotations From... ID: 20141
+			67 menu item Assign Footprints... ID: 20138
+			68 menu item Generate Bill of Materials... ID: 20153
+			69 menu item Generate Legacy Bill of Materials... ID: 20154
+			70 menu item (disabled) Update Schematic from PCB... ID: 20398
+			71 menu item Variants
+			72 menu item Refresh Plugins ID: 20412
+
+The focused UI element is 0 window untitled [Unsaved] — Schematic Editor Secondary Actions: Raise.

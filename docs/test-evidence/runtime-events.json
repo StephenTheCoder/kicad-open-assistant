@@ -1,0 +1,125 @@
+[
+  {
+    "event": "legacy_plugin_registered",
+    "time": 1792886369.2074893,
+    "pid": 42624,
+    "kicad": "10.0.7"
+  },
+  {
+    "event": "ui_probe",
+    "time": 1792886648.5982723,
+    "pid": 42624,
+    "kicad": "10.0.7",
+    "python": "3.11.5",
+    "wx": "4.3.1 msw (phoenix) wxWidgets 3.3.3",
+    "host_class": "Frame",
+    "host_name": "PcbFrame",
+    "host_handle": 2689374,
+    "aui_manager_found": true,
+    "top_level_names": [
+      "PcbFrame"
+    ]
+  },
+  {
+    "event": "modeless_shown",
+    "time": 1792886648.6358335,
+    "pid": 42624,
+    "parent_matches": true,
+    "handle": 1053120,
+    "parent_handle": 2689374,
+    "is_modal": false
+  },
+  {
+    "event": "preview_accepted",
+    "time": 1792886742.9968884,
+    "pid": 42624,
+    "context": {
+      "board": "Unsaved board",
+      "footprints": 0,
+      "tracks": 0,
+      "destination": "None \u2014 offline prototype"
+    }
+  },
+  {
+    "event": "modeless_closed",
+    "time": 1792886748.8664587,
+    "pid": 42624
+  },
+  {
+    "event": "legacy_plugin_registered",
+    "time": 1792886792.5527515,
+    "pid": 42624,
+    "kicad": "10.0.7"
+  },
+  {
+    "event": "ui_probe",
+    "time": 1792886803.8178425,
+    "pid": 42624,
+    "kicad": "10.0.7",
+    "python": "3.11.5",
+    "wx": "4.3.1 msw (phoenix) wxWidgets 3.3.3",
+    "host_class": "Frame",
+    "host_name": "PcbFrame",
+    "host_handle": 2689374,
+    "aui_manager_found": true,
+    "top_level_names": [
+      "PcbFrame"
+    ]
+  },
+  {
+    "event": "modeless_shown",
+    "time": 1792886803.8501391,
+    "pid": 42624,
+    "parent_matches": true,
+    "handle": 398570,
+    "parent_handle": 2689374,
+    "is_modal": false
+  },
+  {
+    "event": "demo_started",
+    "time": 1792886817.2154965,
+    "pid": 42624,
+    "host_kind": "KiCad-owned modeless window (not docked)"
+  },
+  {
+    "event": "demo_cancelled",
+    "time": 1792886822.5285306,
+    "pid": 42624,
+    "was_running": true
+  },
+  {
+    "event": "experimental_dock_added",
+    "time": 1792886828.6950982,
+    "pid": 42624,
+    "added": true,
+    "is_docked": true,
+    "pane_ok": true,
+    "parent_matches": true
+  },
+  {
+    "event": "ipc_action_launched",
+    "pid": 19552,
+    "parent_pid": 40624,
+    "api_socket_present": true,
+    "api_token_present": true,
+    "classification": "separate companion process; not embedded"
+  },
+  {
+    "event": "ipc_action_launched",
+    "pid": 39672,
+    "parent_pid": 32104,
+    "api_socket_present": true,
+    "api_token_present": true,
+    "classification": "separate companion process; not embedded"
+  },
+  {
+    "event": "experimental_dock_removed",
+    "time": 1792887931.6664479,
+    "pid": 42624
+  },
+  {
+    "event": "modeless_closed",
+    "time": 1792887931.667445,
+    "pid": 42624
+  }
+]

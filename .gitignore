@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+.runtime/
+work/
+.env
+dist/
+build/
+*.egg-info/
+vendor/
+.pytest_cache/
+*.sqlite3*
+*.db*
+*.token
+*.secret

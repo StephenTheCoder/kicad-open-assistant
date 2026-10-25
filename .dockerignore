@@ -1,0 +1,16 @@
+.git
+.venv
+.runtime
+work
+vendor
+dist
+build
+tests
+prototype
+docs/test-evidence
+**/__pycache__
+**/*.pyc
+.env
+*.secret
+*.token
+*.sqlite3*

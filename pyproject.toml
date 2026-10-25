@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kicad-open-assistant"
+version = "0.1.0"
+description = "Experimental advisory AI dock for Windows KiCad 10.0.7"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["openai==3.37.0", "httpx==0.28.1", "pypdf==6.21.2", "python-docx==1.2.0", "Pillow==13.0.0"]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Operating System :: Microsoft :: Windows"]
+
+[project.optional-dependencies]
+service = ["fastapi==0.162.0", "uvicorn==0.54.0"]
+test = ["pytest==9.1.1", "pytest-asyncio==1.4.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

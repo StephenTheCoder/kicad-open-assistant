@@ -1,0 +1,32 @@
+services:
+  assistant:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        PYTHON_BASE: ${PYTHON_BASE:-python:3.11-slim-bookworm}
+    environment:
+      KOA_LEDGER: /data/ledger.sqlite3
+      KOA_SPONSORED_ENABLED: ${KOA_SPONSORED_ENABLED:-false}
+      KOA_PRICE_VALID_UNTIL: ${KOA_PRICE_VALID_UNTIL:-2000-01-01}
+      KOA_OPENAI_SECRET_FILE: /run/secrets/openai_key
+    secrets:
+      - openai_key
+    volumes:
+      - ledger:/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 64
+    restart: unless-stopped
+secrets:
+  openai_key:
+    file: ${KOA_SERVER_SECRET_FILE:?Set an absolute path to the server-only secret file}
+volumes:
+  ledger:

@@ -1,0 +1,304 @@
+Window: "PCB Editor", App: pcbnew.exe.
+	0 window PCB Editor Secondary Actions: Raise
+		1 status bar
+			2 text ID: -31993
+			3 text
+			4 text Z 1.51
+			5 text X 136.5000 Y 138.0000
+			6 text dx 136.5000 dy 138.0000 dist 194.1037
+			7 text grid 0.5000
+			8 text mm
+			9 text
+			10 text
+			11 text
+			12 text
+			13 text
+		14 pane panel ID: -31990
+		15 pane panel ID: -31989
+			16 pane GLCanvas ID: -31787
+		17 pane control ID: -31983
+		18 pane control ID: -31982
+		19 pane control ID: -31981
+			373 combo box (settable, string) Value: < Default > ID: 10560
+				374 text (settable, string) Value: < Default >
+				375 button Open ID: DropDown
+		23 pane control ID: -31980
+			376 combo box (settable, string) Value: Track: use netclass width ID: 10559
+				377 text (settable, string) Value: Track: use netclass width
+				378 button Open ID: DropDown
+			379 combo box (settable, string) Value: Via: use netclass sizes ID: 10558
+				380 text (settable, string) Value: Via: use netclass sizes
+				381 button Open ID: DropDown
+			382 combo box (settable, string) Value: F.Cu (PgUp) ID: 6155
+				383 text (settable, string) Value: F.Cu (PgUp)
+				384 button Open ID: DropDown
+			385 combo box (settable, string) Value: 0.5000 mm (19.69 mils) ID: 6153
+				386 text (settable, string) Value: 0.5000 mm (19.69 mils)
+				387 button Open ID: DropDown
+			388 combo box (settable, string) Value: Zoom 1.51 ID: 6152
+				389 text (settable, string) Value: Zoom 1.51
+				390 button Open ID: DropDown
+			391 check box Override locks ID: 6154
+		40 pane panel ID: -31979
+			41 text No objects selected ID: -31978
+			42 pane wxPropertyGrid ID: -31977
+		43 pane ID: -31976
+			44 check box All items ID: -31975
+			45 check box Locked items ID: -31974
+			46 check box Footprints ID: -31973
+			47 check box Text ID: -31972
+			48 check box Tracks ID: -31971
+			49 check box Vias ID: -31970
+			50 check box Pads ID: -31969
+			51 check box Graphics ID: -31968
+			52 check box Zones ID: -31967
+			53 check box Rule Areas ID: -31966
+			54 check box Dimensions ID: -31965
+			55 check box Points ID: -31964
+			56 check box Other items ID: -31963
+		57 pane ID: -31962
+			58 tab ID: -31961
+				59 pane panel ID: -31960
+					60 pane panel ID: -31959
+						61 pane panel
+							62 pane panel
+								63 image
+							64 pane panel
+								65 image
+							66 pane panel
+								67 image
+							68 text F.Cu
+						69 pane panel ID: 2
+							70 pane panel ID: 2
+								71 image ID: 2
+							72 pane panel ID: 2
+								73 image ID: 2
+							74 pane panel ID: 2
+								75 image ID: 2
+							76 text B.Cu ID: 2
+						77 pane panel ID: 9
+							78 pane panel ID: 9
+								79 image ID: 9
+							80 pane panel ID: 9
+								81 image ID: 9
+							82 pane panel ID: 9
+								83 image ID: 9
+							84 text F.Adhesive ID: 9
+						85 pane panel ID: 11
+							86 pane panel ID: 11
+								87 image ID: 11
+							88 pane panel ID: 11
+								89 image ID: 11
+							90 pane panel ID: 11
+								91 image ID: 11
+							92 text B.Adhesive ID: 11
+						93 pane panel ID: 13
+							94 pane panel ID: 13
+								95 image ID: 13
+							96 pane panel ID: 13
+								97 image ID: 13
+							98 pane panel ID: 13
+								99 image ID: 13
+							100 text F.Paste ID: 13
+						101 pane panel ID: 15
+							102 pane panel ID: 15
+								103 image ID: 15
+							104 pane panel ID: 15
+								105 image ID: 15
+							106 pane panel ID: 15
+								107 image ID: 15
+							108 text B.Paste ID: 15
+						109 pane panel ID: 5
+							110 pane panel ID: 5
+								111 image ID: 5
+							112 pane panel ID: 5
+								113 image ID: 5
+							114 pane panel ID: 5
+								115 image ID: 5
+							116 text F.Silkscreen ID: 5
+						117 pane panel ID: 7
+							118 pane panel ID: 7
+								119 image ID: 7
+							120 pane panel ID: 7
+								121 image ID: 7
+							122 pane panel ID: 7
+								123 image ID: 7
+							124 text B.Silkscreen ID: 7
+						125 pane panel ID: 1
+							126 pane panel ID: 1
+								127 image ID: 1
+							128 pane panel ID: 1
+								129 image ID: 1
+							130 pane panel ID: 1
+								131 image ID: 1
+							132 text F.Mask ID: 1
+						133 pane panel ID: 3
+							134 pane panel ID: 3
+								135 image ID: 3
+							136 pane panel ID: 3
+								137 image ID: 3
+							138 pane panel ID: 3
+								139 image ID: 3
+							140 text B.Mask ID: 3
+						141 pane panel ID: 17
+							142 pane panel ID: 17
+								143 image ID: 17
+							144 pane panel ID: 17
+								145 image ID: 17
+							146 pane panel ID: 17
+								147 image ID: 17
+							148 text User.Drawings ID: 17
+						149 pane panel ID: 19
+							150 pane panel ID: 19
+								151 image ID: 19
+							152 pane panel ID: 19
+								153 image ID: 19
+							154 pane panel ID: 19
+								155 image ID: 19
+							156 text User.Comments ID: 19
+						157 pane panel ID: 21
+							158 pane panel ID: 21
+								159 image ID: 21
+							160 pane panel ID: 21
+								161 image ID: 21
+							162 pane panel ID: 21
+								163 image ID: 21
+							164 text User.Eco1 ID: 21
+						165 pane panel ID: 23
+							166 pane panel ID: 23
+								167 image ID: 23
+							168 pane panel ID: 23
+								169 image ID: 23
+							170 pane panel ID: 23
+								171 image ID: 23
+							172 text User.Eco2 ID: 23
+						173 pane panel ID: 25
+							174 pane panel ID: 25
+								175 image ID: 25
+							176 pane panel ID: 25
+								177 image ID: 25
+							178 pane panel ID: 25
+								179 image ID: 25
+							180 text Edge.Cuts ID: 25
+						181 pane panel ID: 27
+							182 pane panel ID: 27
+								183 image ID: 27
+							184 pane panel ID: 27
+								185 image ID: 27
+							186 pane panel ID: 27
+								187 image ID: 27
+							188 text Margin ID: 27
+						189 pane panel ID: 31
+							190 pane panel ID: 31
+								191 image ID: 31
+							192 pane panel ID: 31
+								193 image ID: 31
+							194 pane panel ID: 31
+								195 image ID: 31
+							196 text F.Courtyard ID: 31
+						197 pane panel ID: 29
+							198 pane panel ID: 29
+								199 image ID: 29
+							200 pane panel ID: 29
+								201 image ID: 29
+							202 pane panel ID: 29
+								203 image ID: 29
+							204 text B.Courtyard ID: 29
+						205 pane panel ID: 35
+							206 pane panel ID: 35
+								207 image ID: 35
+							208 pane panel ID: 35
+								209 image ID: 35
+							210 pane panel ID: 35
+								211 image ID: 35
+							212 text F.Fab ID: 35
+						213 pane panel ID: 33
+							214 pane panel ID: 33
+								215 image ID: 33
+							216 pane panel ID: 33
+								217 image ID: 33
+							218 pane panel ID: 33
+								219 image ID: 33
+							220 text B.Fab ID: 33
+						221 pane panel ID: 39
+							222 pane panel ID: 39
+								223 image ID: 39
+							224 pane panel ID: 39
+								225 image ID: 39
+							226 pane panel ID: 39
+								227 image ID: 39
+							228 text User.1 ID: 39
+						229 pane panel ID: 41
+							230 pane panel ID: 41
+								231 image ID: 41
+							232 pane panel ID: 41
+								233 image ID: 41
+							234 pane panel ID: 41
+								235 image ID: 41
+							236 text User.2 ID: 41
+						237 pane panel ID: 43
+							238 pane panel ID: 43
+								239 image ID: 43
+							240 pane panel ID: 43
+								241 image ID: 43
+							242 pane panel ID: 43
+								243 image ID: 43
+							244 text User.3 ID: 43
+						245 pane panel ID: 45
+							246 pane panel ID: 45
+								247 image ID: 45
+							248 pane panel ID: 45
+								249 image ID: 45
+							250 pane panel ID: 45
+								251 image ID: 45
+							252 text User.4 ID: 45
+						301 scroll bar (settable, float) Vertical Value: 0 ID: NonClientVerticalScrollBar
+							302 button Line up ID: UpButton
+							303 thumb Position ID: ScrollbarThumb
+							304 button Page down ID: DownPageButton
+							305 button Line down ID: DownButton
+					253 pane COLLAPSIBLE_PANE_HEADER ID: -31937
+						254 pane Layer Display Options ID: -31936
+				255 tab item (selectable) Layers
+				256 tab item (selectable) Objects
+				257 tab item (selectable) Nets
+			258 text Presets (Ctrl+Tab): ID: -31941
+			259 combo box (settable, string) Presets (Ctrl+Tab): Value: --- ID: -31940
+				260 text (settable, string) Presets (Ctrl+Tab): Value: ---
+				261 button Open ID: DropDown
+			262 text Viewports (Shift+Tab): ID: -31939
+			263 combo box (settable, string) Viewports (Shift+Tab): Value: --- ID: -31938
+				264 text (settable, string) Viewports (Shift+Tab): Value: ---
+				265 button Open ID: DropDown
+		392 pane panel ID: -31662
+			393 text KiCad Open Assistant | UI feasibility ID: -31661
+			394 text Experimental dock — unsupported KiCad UI access — local demo, no AI or network ID: -31660
+			395 edit Experimental dock — unsupported KiCad UI access — local demo, no AI or network Value: Choose a context preview, then try the local streaming demo. ID: -31659
+				396 scroll bar (disabled, settable, float) Vertical Value: 0 ID: NonClientVerticalScrollBar
+					397 button (disabled) Line up ID: UpButton
+					398 button (disabled) Line down ID: DownButton
+			399 text Message (Ctrl+Enter to run demo) ID: -31658
+			400 edit (settable, string) Message (Ctrl+Enter to run demo) Value: What context would you use to explain this board? ID: -31657
+				401 scroll bar (disabled, settable, float) Vertical Value: 0 ID: NonClientVerticalScrollBar
+					402 button (disabled) Line up ID: UpButton
+					403 button (disabled) Line down ID: DownButton
+			404 button Preview board context ID: -31656
+			405 button Run local demo ID: -31655
+			406 button Cancel ID: -31654
+			407 text No context selected. Nothing leaves this computer. ID: -31653
+		266 title bar (settable, string) Value: PCB Editor
+			267 menu bar System ID: MenuBar
+				349 menu item System
+			269 button Minimize
+			270 button Maximize
+			271 button Close
+		363 menu bar Application ID: MenuBar
+			364 menu item File
+			365 menu item Edit
+			366 menu item View
+			367 menu item Place
+			368 menu item Route
+			369 menu item Inspect
+			370 menu item Tools
+			371 menu item Preferences
+			372 menu item Help
