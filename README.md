@@ -1,5 +1,7 @@
 ﻿# KiCad Open Assistant
 
+**Release status:** source and a reproducible candidate are available. Final KiCad runtime checks and the bounded live API smoke are pending; no tested versioned release has been published yet. See [validation evidence](docs/RELEASE-VALIDATION.md).
+
 An original, open-source advisory AI assistant **docked inside KiCad's PCB Editor**. Release 0.1 targets Windows x64 **KiCad 10.0.7**, with its bundled Python/wx runtime. It uses deprecated/internal host interfaces and is explicitly experimental. It never modifies designs or executes model-generated code. Schematic files can be attached; schematic UI hosting is unsupported.
 
 The owner accepted this PCB-only dock after real feasibility tests: [UI decision](docs/ADR-001-ui-hosting.md). There is no silent fallback to a browser, floating window or companion.
@@ -25,7 +27,7 @@ Set a connection, choose a conversation, select attachments/context deliberately
 
 Read [acceptance criteria](docs/ACCEPTANCE.md), [release validation](docs/RELEASE-VALIDATION.md), [implementation architecture](docs/IMPLEMENTATION.md), [privacy](docs/PRIVACY.md), [security](docs/SECURITY.md), [backend deployment](docs/BACKEND.md), and [contribution/build instructions](CONTRIBUTING.md). Tests mock inference by default. Real KiCad checks and the bounded live smoke are recorded separately; a mock UI does not establish integration.
 
-Personal mode works independently of sponsored hosting. Hosted activation requires a chosen host/domain, server secret mount, current pricing review and explicit funded allowance.
+Personal mode works independently of sponsored hosting. Hosted activation requires a chosen host/domain, server secret storage, current pricing review and explicit funded allowance.
 
 ## Licensing and provenance
 

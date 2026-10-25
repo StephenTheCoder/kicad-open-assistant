@@ -34,7 +34,7 @@ Implementation now exists. Passing automated and runtime evidence is recorded in
 | Cancellation | Cancel during preparation/streaming; no late updates; hosted request cancelled where supported; costs/partial output represented accurately |
 | Errors | Simulated auth/quota/timeout/disconnection/parser/server errors preserve draft and offer specific recovery; no automatic alternate-destination resend |
 | Accessibility | Keyboard-only CRUD/attachment/review/send/cancel; focus visible and predictable; screen reader, high DPI, themes and narrow layout verified |
-| Personal key | OS credential storage or explicit session-only mode; key absent from logs, DB and package; invalid key and unavailable store tested |
+| Personal key | OS credential storage with a clear error if unavailable; key absent from logs, DB and package; invalid key and unavailable store tested |
 | Hosted mode | Server-only funded key; authenticated limits and hard budget accounting; malicious client cannot bypass caps; cancellation, retention and outage behavior tested |
 | Packaging | Exact host/runtime compatibility matrix, signed/reproducible packaging plan, dependency lock/SBOM/notices and GPL obligations where applicable |
 
